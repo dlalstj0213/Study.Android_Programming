@@ -139,7 +139,7 @@
 - 사용자들과 직접적인 상호작용을 이끌어내며, 상호작용의 결과를 표현하기 위해서도 사용됨
 - 사용자로부터 입력된 값을 JAVA 프로그램에 전달하기도 함
 
-1. **ViewGroup**
+2. **ViewGroup**
 
 ![](../images/view_group_layout.jpg)
 
