@@ -33,7 +33,19 @@
   - [1) Src 속성](#1-src-속성)
   - [2) 이미지 포맷](#2-이미지-포맷)
   - [3) res/drawable](#3-resdrawable)
-  - [4) ImageView 프로젝트](#4-imageview-프로젝트)
+  - [4) maxHeight, maxWidth 속성과 minHeight, minWidth 속성](#4-maxheight-maxwidth-속성과-minheight-minwidth-속성)
+  - [5) adjustViewBounds 속성](#5-adjustviewbounds-속성)
+  - [6) cropToPadding 속성](#6-croptopadding-속성)
+  - [7) tint 속성](#7-tint-속성)
+  - [8) scaleType 속성](#8-scaletype-속성)
+  - [9) ImageView 프로젝트](#9-imageview-프로젝트)
+- [Button](#button)
+- [EditText](#edittext)
+- [ViewGroup](#viewgroup-1)
+  - [1) layout_width, layout_height 속성](#1-layout_width-layout_height-속성)
+  - [3) Padding 속성](#3-padding-속성)
+  - [4) layout_margin](#4-layout_margin)
+  - [5) padding과 layout_margin](#5-padding과-layout_margin)
 - [용어 정리](#용어-정리)
 
 # 안드로이드 프로젝트 구성 (1)
@@ -304,7 +316,31 @@
 - hdpi : 240 정도의 고해상도
 - 이미지를 추가할 때는 res 폴더 밑의 drawable-mdpi 폴더에 이미지 파일을 복사하면 됨
 
-## 4) ImageView 프로젝트
+## 4) maxHeight, maxWidth 속성과 minHeight, minWidth 속성
+
+- 화면에 표현되는 이미지가 출력될 최대/최소 크기를 지정함
+
+## 5) adjustViewBounds 속성
+
+- 화면에 표현되는 이미지의 종횡비를 맞추기 위해 ImageView의 크기를 적당히 조정할 것인가를 지정함
+- 참/거짓 둘 중 하나의 값만 지정 가능하므로 속성값은 true나 false 중 하나를 사용해야 함
+
+## 6) cropToPadding 속성
+
+- true 값일 경우 위젯의 주어진 여백에 맞추기 위해 이미지의 일부를 잘라냄
+
+## 7) tint 속성
+
+- 이미지에 색조를 입히며 #aarrggbb 형식으로 지정함
+- 이미지에 대해서 색조를 지정하면 이미지 위에 덮여 출력됨
+- 불투명한 색은 이미지를 완전히 가리므로 src 속성에 단색을 주는 것과 같은 효과를 나타냄
+
+## 8) scaleType 속성
+
+- 이미지 확대/축소 알고리즘을 지정하여 원래 크기와 다른 이미지를 화면에 표현함
+- matrix, fitXY, centerm ceterCrop 등의 여러 가지 알고리즘 중 하나를 지정함
+
+## 9) ImageView 프로젝트
 
 - 이미지로 사용할 파일을 res 폴더에 복사만 해 놓으면 aapt가 컴파일 전에 res 폴더에서 새로 추가된 이미지 파일을 찾아내고 R.java에 파일명 ID를 자동 정의해 줌
 - R.java 내용과 같이 sample이나 apple파일 이름으로 리소스 ID가 대입되므로 레이아웃 파일에서는 sample, apple 상수를 사용하기만 하면 됨
@@ -312,6 +348,52 @@
 - 첫 번째 이미지는 단순히 src 속성만 정의했으므로 이미지의 원래 크기대로 출력됨
 - 두 번째 이미지는 똑같은 src 속성을 지정하되 최대 크기를 100*80으로 제한했으므로 이 크기에 맞게 축소됨
 - 마지막 이미지는 옅은 분홍색의 색조를 입혔으며 원본 이미지에 비해 분홍색을 얹힌 효과가 남
+
+# Button
+
+- 사용자가 선택해 명령을 내릴 수 있는 위젯이며 사각 모양을 하고 있으며 표면에 명령의 의미를 설명하는 문자열이 표시되어 있음
+
+# EditText
+
+- 문자열을 입력받는 위젯이며 간단히 줄여 에디트라고 부름
+- TextView의 서브 클래스이므로 TextView의 모든 속성을 사용할 수 있으며 추가로 문자열 편집과 관련된 메소드를 제공함
+
+# ViewGroup
+
+## 1) layout_width, layout_height 속성
+
+- View의 폭과 높이의 크기를 지정하는 속성
+- View는 부모 View(또는 액티비티) 안에 배치될 때, layout_width, layout_height 속성이 지정하는 만큼의 크기로 부모 View 안에 배치됨
+- 수평 방향과 수직 방향에 대해 크기를 지정할 수 있으며 다음 세 가지 중 하나의 값을 가짐
+
+  |속성값|설명|
+  |:---:|:---:|
+  |`match_parent`|부모의 주어진 크기를 다 채운다.|
+  |`wrap_content`|내용물의 크기만큼만 채운다.|
+  |`정수 크기`|지정한 크기에 맞춘다.|
+
+## 3) Padding 속성
+
+- View와 내용물간의 간격을 지정함
+- Button의 경우 Button 내부의 문자열과 Button 테두리와의 간격이 padding이며 레이아웃의 경우 자식 View와의 간격이 padding임
+- padding 속석에 값을 대입하면 4면 모두 동일한 여백이 적용되어 한번에 여백을 지정할 수 있음
+- paddingLeft, paddingTop, paddingRight, paddingBottom 속성에 각각의 여백을 지정함
+
+## 4) layout_margin
+
+- View와 부모와의 간격을 지정하면 근처에 형제 View가 있으면 형제 View와의 간격도 layout_margin 만큼 떨어짐
+- padding과 마찬가지로 layout_margin 속성 자체는 4면의 여백을 동일하게 지정함
+- 각 면에 개별적인 여백을 지정하고 싶으면 layout_marginLeft, layout_marginRight, layout_marginTop, layout_marginBottom 속성을 각각 대입할 수 있음
+- layout_margin 속성에 값을 대입하면 4방향으로 모두 같은 layout_margin이 적용됨
+- 원하는 방향에 대해서만 layout_margin을 지정할 수도 있음
+
+## 5) padding과 layout_margin
+
+- padding 과 layout_margin은 둘 다 여백이라는 면에서는 유사하지만 적용되는 위치는 완전히 반대임
+- layout_margin은 View와 부모 사이에 적용되며, padding은 View와 내용물 사이에 적용됨
+- View의 입장에서 볼 때 layout_margin 속성은 바깥 여백이고 padding 속성은 안쪽 여백임
+- padding은 View의 내부이므로 크기에 포함되지만 layout_margin은 그렇지 않다는 점에서 다름
+- padding은 View 자체 속성이지만 layout_margin은 레이아웃 속성임
 
 # 용어 정리
 
@@ -341,3 +423,7 @@
   - 화면에 아이콘이나 비트맵을 출력하는 위젯
 - **위젯**
   - 컴퓨터에서 운영 체계 위의 응용 프로그램을 동작시키고 결과를 화면에 표시하는 작은 그래픽 사용자 인터페이스(GUI)도구
+- **이벤트**
+  - 프로그램이 반응하도록 사용자가 생성시키는 동작 또는 사건의 발생
+- **리스너**
+  - 데이터를 받는 쪽을 말함
