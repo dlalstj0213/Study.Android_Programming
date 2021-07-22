@@ -29,6 +29,7 @@
   - [6) typeFace 속성](#6-typeface-속성)
   - [7) width, height 속성](#7-width-height-속성)
   - [8) singleLine 속성](#8-singleline-속성)
+  - [9) gravity 속성](#9-gravity-속성)
 - [ImageView](#imageview)
   - [1) Src 속성](#1-src-속성)
   - [2) 이미지 포맷](#2-이미지-포맷)
@@ -38,7 +39,6 @@
   - [6) cropToPadding 속성](#6-croptopadding-속성)
   - [7) tint 속성](#7-tint-속성)
   - [8) scaleType 속성](#8-scaletype-속성)
-  - [9) ImageView 프로젝트](#9-imageview-프로젝트)
 - [Button](#button)
 - [EditText](#edittext)
 - [ViewGroup](#viewgroup-1)
@@ -46,6 +46,11 @@
   - [3) Padding 속성](#3-padding-속성)
   - [4) layout_margin](#4-layout_margin)
   - [5) padding과 layout_margin](#5-padding과-layout_margin)
+- [LinearLayout](#linearlayout)
+  - [1) orientation 속성](#1-orientation-속성)
+  - [2) basedlineAligned 속성](#2-basedlinealigned-속성)
+  - [3) layout_gravity](#3-layout_gravity)
+  - [4) layout_weight](#4-layout_weight)
 - [용어 정리](#용어-정리)
 
 # 안드로이드 프로젝트 구성 (1)
@@ -291,6 +296,14 @@
 - singleLine 속성의 디폴트는 false로 폭보다 더 긴 줄은 자동으로 아래쪽에서 새로운 줄로 시작됨
 - 여러 줄 출력이 기본 속성이지만 꼭 한 줄에 모두 출력하려면 이 속성을 true로 변경함
 
+## 9) gravity 속성
+
+- View의 안쪽에 배치되는 내용물(TextView, ImageView, 레이아웃 등)을 배치하는 방식(정렬 방식)를 결정하는 속성
+- 수평/수직 방향에 대해 정렬 방식을 지정할 수 있으며, '|' 연산자로 두 속성을 묶어서 지정할 수 있음
+- 각 정렬 방식은 비트 필드로 정의되어 있으며 center 속성값과 fill 속성값은 수평/수직 정렬 상태 플래그의 조합으로 정의됨
+- gravity 속성의 기본값은 좌측 상단에 배치하므로, View가 좌상단에 적용됨
+- 
+
 # ImageView
 
 - 화면에 그림을 보여주는 위젯
@@ -340,15 +353,6 @@
 - 이미지 확대/축소 알고리즘을 지정하여 원래 크기와 다른 이미지를 화면에 표현함
 - matrix, fitXY, centerm ceterCrop 등의 여러 가지 알고리즘 중 하나를 지정함
 
-## 9) ImageView 프로젝트
-
-- 이미지로 사용할 파일을 res 폴더에 복사만 해 놓으면 aapt가 컴파일 전에 res 폴더에서 새로 추가된 이미지 파일을 찾아내고 R.java에 파일명 ID를 자동 정의해 줌
-- R.java 내용과 같이 sample이나 apple파일 이름으로 리소스 ID가 대입되므로 레이아웃 파일에서는 sample, apple 상수를 사용하기만 하면 됨
-- 중간에 공백이 들어가면 안되며 특수 기호도 사용할 수 없고 영문 소문자와 언더바(_) 정도만 사용할 수 있는 파일 명칭 규칙에 맞게 조정해야 함
-- 첫 번째 이미지는 단순히 src 속성만 정의했으므로 이미지의 원래 크기대로 출력됨
-- 두 번째 이미지는 똑같은 src 속성을 지정하되 최대 크기를 100*80으로 제한했으므로 이 크기에 맞게 축소됨
-- 마지막 이미지는 옅은 분홍색의 색조를 입혔으며 원본 이미지에 비해 분홍색을 얹힌 효과가 남
-
 # Button
 
 - 사용자가 선택해 명령을 내릴 수 있는 위젯이며 사각 모양을 하고 있으며 표면에 명령의 의미를 설명하는 문자열이 표시되어 있음
@@ -395,6 +399,41 @@
 - padding은 View의 내부이므로 크기에 포함되지만 layout_margin은 그렇지 않다는 점에서 다름
 - padding은 View 자체 속성이지만 layout_margin은 레이아웃 속성임
 
+# LinearLayout
+
+- 차일드 View를 일렬로 배치하는 레이아웃
+- XML 문서에 나타나는 순서대로 View가 배치됨
+- 예제 프로젝트 레이아웃도 LinearLayout안에 TextView를 기본으로 구성됨
+
+## 1) orientation 속성
+
+- 차일드 View를 일렬로 배열하는 방법은 수평 방향과 수직 방향이 있음
+- Vertical은 차일드 View를 위에서 아래로 수직 방향으로 배열하고, horizontal은 차일드 View를 왼쪽에서 오른쪽으로 수평 방향으로 배열함
+- 이 속성을 별도로 지정하지 않을 때는 기본값으로 수평 배열(horizontal)이 적용됨
+- TextView 예제에도 똑같은 방식으로 orientation 속성을 조정하여도 텍스트가 가로로 배열되지 않음
+- 속성값 하나만 바꾸면 될 것 같지만 막상 속성을 변경해도 원하는 결과가 나오지 않음
+
+## 2) basedlineAligned 속성
+
+- 높이가 다른 차일드 View를 수평으로 나란히 배치할 때 아래쪽 면을 가지런히 정렬할 것인가 아닌가를 지정함
+- 폰트 높이가 서로 다른 문자열들을 출력할 때 유용하며, 문자열 높이가 달라도 보기 좋게 출력됨 (기본값은 true)
+- 글자의 베이스를 맞추는 동작은 글자들이 수평으로 나란히 있을 때만 의미가 있음
+- baselineAligned 속성은 수평 레이아웃에 적용할 때만 의미가 있으며 수직 레이아웃에서는 별다른 의미가 없음
+
+## 3) layout_gravity
+
+- 속성값의 특징은 gravity 속성과 동일하되 적용되는 대상이 다름
+- gravity는 View 안의 내용물의 배치 장소를 지정하고, layout_gravity는 View를 부모 View의 어디에 배치할 것인가를 결정함
+
+## 4) layout_weight
+
+- 부모 레이아웃의 남은 영역을 얼마나 차지할 것인가를 결정하는 비율값
+- 중요도가 0이면 자신의 고유한 크기만큼만 차지하며 중요도가 1이상 이면 형제 View와의 비율에 따라 부모의 영역을 균등하게 배분함
+- layout_weight 가 0일 경우
+  - layout_weight 속성을 지정하지 않거나 0으로 지정하면 지정한 높이 만큼만 차지하고 분할에는 참여하지 않음
+  - 중요도가 0인 차일드는 분할에서 제외되며 나머지 View들끼리 남은 영역을 중요도에 따라 분할함
+
+
 # 용어 정리
 
 - **XML**
@@ -427,3 +466,11 @@
   - 프로그램이 반응하도록 사용자가 생성시키는 동작 또는 사건의 발생
 - **리스너**
   - 데이터를 받는 쪽을 말함
+- **gravity**
+  - 수평, 수직 방햐에 대해 정렬 방식을 각각 지정할 수 있는 속성
+- **툴바**
+  - 자주 이용하는 기능을 직접 가동할 수 있게 버튼을 만들어 나란히 모아놓은 메뉴
+- **마진**
+  - 뷰와 부모 사이에 적용되는 여백 속성
+- **패딩**
+  - 뷰와 내용물 사이에 적용되는 여백 속성
