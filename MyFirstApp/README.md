@@ -51,6 +51,15 @@
   - [2) basedlineAligned 속성](#2-basedlinealigned-속성)
   - [3) layout_gravity](#3-layout_gravity)
   - [4) layout_weight](#4-layout_weight)
+- [RelativeLayout](#relativelayout)
+  - [1) 리소스 컴파일러와의 관계](#1-리소스-컴파일러와의-관계)
+  - [2) RelativeLayout의 배치상의 어려움](#2-relativelayout의-배치상의-어려움)
+  - [3) RelativeLayout의 논리상의 문제점](#3-relativelayout의-논리상의-문제점)
+- [AbsuoluteLayout](#absuolutelayout)
+  - [1) 좌표 지정 방법 고려 사항](#1-좌표-지정-방법-고려-사항)
+- [FrameLayout](#framelayout)
+  - [FrameLayout 실용성](#framelayout-실용성)
+  - [FrameLayout 속성](#framelayout-속성)
 - [용어 정리](#용어-정리)
 
 # 안드로이드 프로젝트 구성 (1)
@@ -433,6 +442,78 @@
   - layout_weight 속성을 지정하지 않거나 0으로 지정하면 지정한 높이 만큼만 차지하고 분할에는 참여하지 않음
   - 중요도가 0인 차일드는 분할에서 제외되며 나머지 View들끼리 남은 영역을 중요도에 따라 분할함
 
+# RelativeLayout
+
+- 위젯과 부모 View와의 위치 관계 또는 위젯끼리의 관계를 지정함으로써 View를 배치하는 레이아웃으로 서로간의 위치 관계를 지정하는 것임
+- 위젯끼리의 관계를 지정하려면 "누구"를 지칭하기 위한 id가 필요한므로 기준이 되는 위젯에 id를 지정해야 함
+- 상대적 위치가 지정되지 않으면, 자식 View의 기본 위치는 좌측 상단임
+
+|형식|설명|
+|---|---|
+|layout_above|~의 위치에 배치한다.|
+|layout_below|~의 아래에 배치한다.|
+|layout_toLeftOf|~의 왼쪽에 배치한다.|
+|layout_toRightOf|~의 오른쪽에 배치한다.|
+|layout_alignLeft|~와 왼쪽 변을 맞춘다.|
+|layout_alignTop|~와 위쪽 변을 맞춘다.|
+|layout_alignRight|~와 오른쪽 변을 맞춘다.|
+|layout_alignBottom|~와 아래쪽 변을 맞춘다.|
+|layout_alignParentLeft|true이면 부모와 왼쪽 변을 맞춘다.|
+|layout_alignParentTop|true이면 부모와 위쪽 변을 맞춘다.|
+|layout_alignParentRight|true이면 부모와 오른쪽 변을 맞춘다.|
+|layout_alignParentBottom|true이면 부모와 아래쪽 변을 맞춘다.|
+|layout_alignBaseline|~와 베이스라인을 맞춘다.|
+|layout_alignWithParentIfMissing|layout_toLeftOf 등의 속성에 대해 앵커가 발견되지 않으면 부모를 앵커로 사용한다.|
+|layout_centerHorizontal|true이면 부모의 수평 중앙에 배치한다.|
+|layout_centerVertical|true이면 부모의 수직 중앙에 배치한다.|
+|layout_centerInParent|true이면 부모의 수평, 수직 중앙에 배치한다.|
+
+## 1) 리소스 컴파일러와의 관계
+
+- 빠른 배치를 위해 위젯간의 관계를 한번에 읽도록 되어 있음
+- 특정 View가 다른 View의 위치에 종속적일 때 기준이 되는 View를 먼저 정의해야 하며 그러다 보니 화면상의 순서와 레이아웃상의 순서가 달라지기도 함
+
+## 2) RelativeLayout의 배치상의 어려움
+
+- 여러 View끼리의 관계를 정의하다 보면 대체되는 배치를 찾기 어렵거나 비효율적인 경우가 있어 화면상의 순서와 일치시키기가 어려움
+
+## 3) RelativeLayout의 논리상의 문제점
+
+- 속성들을 조합하면 논리적으로 맞지 않는 조합이 발생할 수 있으므로 순서에도 유의해야함
+
+# AbsuoluteLayout
+
+- 의미상으로는 RelativeLayout의 반대 속성을 가지를 레이아웃
+- 이름 그대로 관계나 순서에 상관없이 지정한 절대 좌표에 차일드 View를 배치함
+- 차일드 View의 좌표를 layout_X, layout_y 속성으로 지정해 놓으면 부모의 좌상단을 기준으로 한 좌표에 View가 배치됨
+
+## 1) 좌표 지정 방법 고려 사항
+
+- 좌표를 지정하여 차일드 View를 배치하는 방식은 임의의 위치에 VIew를 배치할 수 있어 자유도가 높은 편임
+- 장비의 해상도나 방향이 수시로 바뀔 수 있는 모바일 환경에서는 유연하지 못하고 관리하기도 어려움
+- 특정 장비에는 잘 맞아 보여도 해상도가 바뀌면 배치가 화면 크기와 맞지 않아 일일이 좌표를 다시 조정해야 하는 번거러움이 있음
+- 공식 문서에는 AbsoluteLayout을 사용하지 말라고 되어 있으며 제공되지 않는 레이아웃이라고 생각해도 무방함
+- 나머지 레이아웃으로도 얼마든지 복잡한 배치를 할 수 있으며 호환성도 충분히 확보할 수 있음
+- 아주 특수한 경우나 단순한 테스트 예제 작성용으로는 사용될 수 있을지 몰라도 상용 프로그램 제작에는 사용할만한 레이아웃이 아님
+
+# FrameLayout
+
+- 차일드 View를 배치하는 규칙이 따로 없고 모든 차일드는 FrameLayout의 좌측 상단에 나타남
+- 차일드 View가 두 개 이상일 때는 추가된 순서대로 겹쳐서 표시됨
+- 먼저 추가된 차일드 View가 아래쪽에 깔리고 나중에 추가된 차일드 View가 위쪽에 겹쳐짐
+
+## FrameLayout 실용성
+
+- ViewGroup의 서버클래스로서 레이아웃의 일종이므로 실행중에 차일드 View를 관리할 수 있음
+- 차일드 View 하나만 선택적으로 나타나게 할 수 있음
+
+## FrameLayout 속성
+
+|속성명|설명|
+|---|---|
+|foreground|차일드의 위쪽에 살짝 얹히는 이미지를 지정함|
+|foregroundGravity|foreground 이미지릐 위치를 결정함|
+|measureAllChildren|레이아웃 크기의 결정을 모든 자식 View의 크기에 맞추거나 visibility 속성이 visible로 설정된 자식 View에만 맞출 것인지를 결정함|
 
 # 용어 정리
 
