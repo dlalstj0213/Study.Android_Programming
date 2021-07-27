@@ -6,41 +6,56 @@
     android:layout_height="match_parent"
     android:scrollbarAlwaysDrawHorizontalTrack="true"
     android:padding="30px"
+    android:background="@color/black"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFF6C"
-            android:text="Top TextView"
-            android:textSize="50px" />
-
-        <LinearLayout
+            android:id="@+id/textViewTop"
+            android:text="padding1"
+            android:padding="15px"
+            android:textSize="30px"
+            android:textColor="@color/white"
+            android:background="#7c7d7c"/>
+        
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dip"
-            android:padding="15dip"
-            android:background="#00D8FF" >
+            android:id="@+id/editUpperText"
+            android:layout_below="@id/textViewTop"
+            android:hint="Upper Text"
+            android:padding="15px"
+            android:textSize="50px"
+            android:inputType="textCapCharacters"
+            android:background="@color/white"/>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="BUTTON"
-            android:typeface="serif" />
-        </LinearLayout>
+            android:id="@+id/btn"
+            android:layout_margin="30px"
+            android:layout_below="@id/editUpperText"
+            android:inputType="text"
+            android:clickable="true"
+            android:text="Button"/>
 
-        <TextView
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFF6C"
-            android:text="Bottom TextView"
-            android:textSize="50px" />
-    </LinearLayout>
+            android:layout_below="@id/btn"
+            android:id="@+id/editLowerText"
+            android:hint="Lower Text"
+            android:padding="15px"
+            android:textSize="50px"
+            android:inputType="text"
+            android:background="@color/white"/>
+
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
