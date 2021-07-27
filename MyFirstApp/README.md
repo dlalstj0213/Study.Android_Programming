@@ -60,6 +60,16 @@
 - [FrameLayout](#framelayout)
   - [FrameLayout 실용성](#framelayout-실용성)
   - [FrameLayout 속성](#framelayout-속성)
+- [TableLayout](#tablelayout)
+  - [TableLayout - 표의 속성](#tablelayout---표의-속성)
+  - [TableLayout - 차일드 View의 경우](#tablelayout---차일드-view의-경우)
+  - [TableLayout 속성 변경](#tablelayout-속성-변경)
+- [레이아웃의 중첩](#레이아웃의-중첩)
+- [실행 중에 속성 바꾸기](#실행-중에-속성-바꾸기)
+  - [엘리먼트 속성 변경](#엘리먼트-속성-변경)
+    - [1) 속성 변경 방법 - orientation](#1-속성-변경-방법---orientation)
+    - [2) 속성 변경 방법 - gravity](#2-속성-변경-방법---gravity)
+    - [3) 속성 변경 방법 - TextView](#3-속성-변경-방법---textview)
 - [용어 정리](#용어-정리)
 
 # 안드로이드 프로젝트 구성 (1)
@@ -515,6 +525,61 @@
 |foregroundGravity|foreground 이미지릐 위치를 결정함|
 |measureAllChildren|레이아웃 크기의 결정을 모든 자식 View의 크기에 맞추거나 visibility 속성이 visible로 설정된 자식 View에만 맞출 것인지를 결정함|
 
+# TableLayout
+
+## TableLayout - 표의 속성
+
+- 표 형식으로 차일드 View를 배치하는 레이아웃
+- TableLayout은 TableRow 객체로 구성되며 TableRow 객체 하나가 표에서 행에 해당함
+- TableRow 안에는 여러개의 열이 배치되며, 하나의 열을 셀이라고 함
+- 셀에는 하나의 차일드 View가 들어감
+- TableRow 개수가 가로 행의 개수이며 TableRow 안에 배치되는 차일드 View의 개수가 세로 열의 개수가 되고 TableLayout의 전체 크기는 행 * 열이 됨
+
+## TableLayout - 차일드 View의 경우
+
+- 여러 개의 행이 한 TableLayout에 공존해야 하므로 TableRow의 높이는 wrap_content로 해야 함
+- 셀에 배치되는 차일드 View는 무조건 주어진 셀 안에 배치되므로 layout_width 속성은 따로 지정할 수 없으며 항상 fill_parent로 가정됨
+- 차일드 View의 높이는 기본 속성값으로 wrap_content로 되어 있지만 원한다면 셀 안을 가득 채울 수 있음
+
+## TableLayout 속성 변경
+
+- shrinkColums, stretchColumns 속성을 사용하면 특정 열을 '축소/확장 가능' 으로 지정할 수 있음
+- '축소 가능'으로 지정하면 부모 폭에 맞추기 위해 열의 폭을 강제로 축소하고, '확장 가능'으로 지정하면 부모 View의 남는 여백을 채우기 위해 열의 폭을 임의로 확장할 수 있음
+- 두 속성을 모두 다 지정할 수도 있는데 이 경우는 부모 View의 사용 가능한 폭을 모두 사용하여 TableLayout의 표를 채움
+
+# 레이아웃의 중첩
+
+- 레이아웃은 View의 컨테이너이므로 View로부터 파생된 모든 ViewGroup과 위젯을 레이아웃 안에 중첩하여 배치할 수 있음
+- 레이아웃 자체도 View의 파생 클래스이므로 레이아웃끼리 중첩하여 배치하는 것이 가능함
+
+# 실행 중에 속성 바꾸기
+
+## 엘리먼트 속성 변경
+
+- FramLayout에 속한 레이아웃의 visibility 속성을 실행 시간에 바꾸는 예제임
+- 코드로 속성을 변경할 때는 관련 메소드를 호출함
+  - 예) LinearLayout의 방향을 바꾸고 싶다면 LinearLayout 클래스의 setOrientation 메소드를 호출함
+
+### 1) 속성 변경 방법 - orientation
+
+- 인수로 전달할 수 있는 값은 수평일 때 0, 수직일 때 1이며, LinearLayout클래스에 HORIZONTAL, VERTICAL 등의 상수가 정의되어 있음
+  - `public void LinearLayout.setOrientation (int orientation)`
+
+### 2) 속성 변경 방법 - gravity
+
+- 정렬 속성인 gravity를 변경하는 setGravity 메소드
+- setGravity 메소드의 인수들은 Gravity 클래스에 LEFT, RIGHT, CENTER 등의 상수로 정의됨
+- 현재 속성값을 조사하는 getOrientaion, getGravity 메소드도 존재함
+  - `public void TextView.setGravity (int gravity)`
+
+### 3) 속성 변경 방법 - TextView
+
+- TextView의 속성과 관련된 setText, setTextColor, setTextSize 메소드
+- setText 메소드는 문자열을 받기도 하고 리소스 ID를 받기도 하므로 문자열 정보를 가진 객체면 어떤 것이든지 인수로 전달할 수 있음
+  - `void setText(CharSequence text)`
+  - `void setTextColor(int color)`
+  - `setTextSize(float size)`
+
 # 용어 정리
 
 - **XML**
@@ -555,3 +620,21 @@
   - 뷰와 부모 사이에 적용되는 여백 속성
 - **패딩**
   - 뷰와 내용물 사이에 적용되는 여백 속성
+- **프레임**
+  - 화면을 여러 개의 윈도(window)로 나누어 메뉴 등을 쉽게 구분할 수 있도록 지원함
+- **셀**
+  - 기본적인 형태를 구성하는 가로세로 격자형의 행과 열의 교차로 형성되는 직사각형의 영역
+- **파생 클래스**
+  - 자바의 extends 키워드를 사용하여 상속 혹은 확장해서 정의된 클래스
+- **TableRow**
+  - TableLayout의 행을 정의하는 객체
+- **setOrientation**
+  - View의 orientation 속성값을 변경하는 메소드
+- **setGravity**
+  - View의 gravity 속성값을 변경하는 메소드
+- **setText**
+  - TextView의 text 속성값을 변경하는 메소드
+- **getGravity**
+  - View의 gravity 속성값을 반환하는 메소드
+- **getOrientation**
+  - View의 orientation 속성값을 반환하는 메소드
