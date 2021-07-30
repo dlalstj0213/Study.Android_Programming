@@ -14,12 +14,12 @@
     - [ViewGroup](#viewgroup)
     - [위젯](#위젯)
   - [3) View의 속성](#3-view의-속성)
-    - [a) id 속성](#a-id-속성)
-    - [b) clickable, longClickable 속성](#b-clickable-longclickable-속성)
-    - [c) background 속성](#c-background-속성)
-    - [d) padding 속성](#d-padding-속성)
-    - [e) visibility 속성](#e-visibility-속성)
-    - [f) focusable 속성](#f-focusable-속성)
+    - [3-1) id 속성](#3-1-id-속성)
+    - [3-2) clickable, longClickable 속성](#3-2-clickable-longclickable-속성)
+    - [3-3) background 속성](#3-3-background-속성)
+    - [3-4) padding 속성](#3-4-padding-속성)
+    - [3-5) visibility 속성](#3-5-visibility-속성)
+    - [3-6) focusable 속성](#3-6-focusable-속성)
 - [TextView](#textview)
   - [1) TextView의 속성](#1-textview의-속성)
   - [2) text 속성](#2-text-속성)
@@ -70,6 +70,19 @@
     - [1) 속성 변경 방법 - orientation](#1-속성-변경-방법---orientation)
     - [2) 속성 변경 방법 - gravity](#2-속성-변경-방법---gravity)
     - [3) 속성 변경 방법 - TextView](#3-속성-변경-방법---textview)
+- [Canvas](#canvas)
+  - [1) CustomView](#1-customview)
+  - [2) Canvas](#2-canvas)
+  - [3) Canvas의 메소드](#3-canvas의-메소드)
+  - [4) Paint 객체](#4-paint-객체)
+    - [4-1) setColor 메소드](#4-1-setcolor-메소드)
+    - [4-2) setStrokeCap](#4-2-setstrokecap)
+    - [4-3) setStrokeJoin](#4-3-setstrokejoin)
+    - [4-4) setStyle](#4-4-setstyle)
+- [Toast](#toast)
+  - [Toast 객체](#toast-객체)
+  - [makeText 메소드](#maketext-메소드)
+- [소리 츨력](#소리-츨력)
 - [용어 정리](#용어-정리)
 
 # 안드로이드 프로젝트 구성 (1)
@@ -200,7 +213,7 @@
 
 ## 3) View의 속성
 
-### a) id 속성
+### 3-1) id 속성
 
 - View의 이름을 정의함
 - JAVA 프로그램이나 XML 문서에서 View를 참조할 때 ID를 사용하므로 의미를 잘 성명할 수 있는 직관적인 이름을 붙이는 경우가 많음
@@ -215,7 +228,7 @@
   - ex) Button에서 textView라는 id의 View를 접근함
     - `android:layout_below="@id/textView"`  
 
-### b) clickable, longClickable 속성
+### 3-2) clickable, longClickable 속성
 
 - clickable : 마우스 클릭 이벤트 허용 여부를 결정함
 - longClickable : 롱클릭 이벤트 허용 여부를 결정함
@@ -223,7 +236,7 @@
 - Long click : View를 누른 채로 잠시 기다린는 것
 - 논리형이므로 true 또는 false 둘 중 하나의 값을 지정함
 
-### c) background 속성
+### 3-3) background 속성
 
 - View의 배경을 채우는 방법을 지정함
 - 별다른 지정이 없다면 View의 기본 배경이 그려짐
@@ -236,14 +249,14 @@
 - '#' 다음에 16진수로 각 색상 요소의 강도를 지정
 - 웹에서 흔히 사용되는 표준화된 방식임
 
-### d) padding 속성
+### 3-4) padding 속성
 
 - View와 내용물간의 간격을 지정함
 - View의 안쪽 여백이며, TextView의 경우 TextView 자체와 중앙의 텍스트 사이에 padding 속성값 만큼 여백이 삽입됨
 - padding 속성에 값을 지정하면 네 방향(상하좌우)에 대해 동일한 여백이 적용됨
 - paddingLeft, paddingTop, paddingRight, paddingBottom 속성에 개별적으로 값을 지정해 각 변에 서로 다른 여백을 줄 수 있음
 
-### e) visibility 속성
+### 3-5) visibility 속성
 
 - 화면에 View의 표시 유무를 지정함
 - 별다른 지정이 없으면 보이는 상태로 배치되지만 이 속성을 사용하면, 실행시에 필요할 때만 보이거나 숨길 수도 있음
@@ -256,7 +269,7 @@
 - invisible은 화면에 보이지는 않지만 자리는 여전히 차지하기 떄문에 gone과 다름
 - invisible은 일시적인 투명 상태이며 gone은 완전히 사라진 상태임
 
-### f) focusable 속성
+### 3-6) focusable 속성
 
 - 키보드 포커스 허용 여부를 지정함
 - View 클래스 자체는 디폴트로 포커스를 받지 않도록 되어 있으므로 키 입력을 받으려면 이 속성을 true로 변경해야함
@@ -580,6 +593,105 @@
   - `void setTextColor(int color)`
   - `setTextSize(float size)`
 
+# Canvas
+
+## 1) CustomView
+
+- View 또는 그 파생 클래스를 상속받은 후에 onMeasur, onDraw 메소드를 재정의하여 원하는 크기와 모양의 이미지를 그리거나 텍스트를 쓰는 방법
+
+## 2) Canvas
+
+- View의 그리기 표면이며 Canvas위에 그림을 그리는 메소드를 가짐
+- Canvas 객체는 시스템이 초기화하며 View의 onDraw인수로 전달하므로 생성할 필요없이 전달받은 인수를 사용하기만 하면 됨
+
+## 3) Canvas의 메소드
+
+- 기본적인 도형을 그리는 메소드들
+
+|methods|
+|---|
+|`void drawPoint(float x, float y, Paint paint)`|
+|`void drawLine(float startX, float startY, float stopX, Paint paint)`|
+|`void drawCircle(float cx, float cy, float radius, Paint paint)`|
+|`void drawRect(float left, float top, float right, float bottom, Paint paint)`|
+|`void drawText(String text, float x, float y, Paint paint)`|
+
+## 4) Paint 객체
+
+- **그리기에 대한 속성정보를 가지는 객체**이며 모든 그리기 함수에게 인수로 전달됨
+- 똑같은 좌표에 도형을 그리더라도 채워지는 색상이나 선의 굵기에 따라 결과가 달라지는데 이런 속성들을 Paint 객체로 지정함
+- New 연산자로 빈 Paint 객체를 생성하면 디폴트 속성으로 생성되며, 속성을 조절하는 메소드를 호출하면 원하는 속성으로 수정 가능함
+- Void setAntiAlias (Boolean aa) : 색상차가 뚜렷한 경계 부근에 중간 생을 삽입하거나 도형이나 글꼴이 주변 배경과 부드럽게 잘 어울리도록 하는 기법
+
+### 4-1) setColor 메소드
+
+- 현재 설정된 색상을 조사할 때 사용함
+- 16진수로 설정된 색상 값을 반환하므로 각 요소를 분리하려면 비트 연산을 해야함
+- 색상에 대해 별다른 지정을 하지 않으면 디폴트 색상인 검정색으로 그려짐
+
+|methods|description|
+|---|---|
+|`Paint pnt = new Paint();`|검정색으로 그려짐|
+|`pnt.setColor(Color.GREEN);`|초록색으로 그려짐|
+|`pnt.setColor(Color.Yellow);`|노란색으로 그려짐|
+
+### 4-2) setStrokeCap
+
+- setStrokeCap 속성은 선 끝 모양을 지정함
+
+|Stroke Cap|description|
+|---|---|
+|BUTT|지정된 좌푱에서 선이 끝난다.|
+|ROUND|둥근 모양으로 끝이 장식된다.|
+|SQUARE|사각형 모양이며 지정한 좌표보다 조금 더 그어진다.|
+
+### 4-3) setStrokeJoin
+
+- 사각형의 모서리처럼 선분이 만나서 각지는 곳의 모양을 결정함
+
+|Stroke join|description|
+|---|---|
+|MITER|90도로 각진 형태를 그림|
+|BEVEL|깎인 모양|
+|ROUND|둥근 모양|
+
+### 4-4) setStyle
+
+- 사각형이나 원처럼 내부가 채워진 도형을 그릴 때 외곽선의 모양을 결정함
+
+|Style|설명|
+|---|---|
+|FILL|채우기만 하며 외곽선은 그리지 않음|
+|FILL_AND_STROKE|채우기도 하고 외곽선도 그린다.|
+|STROKE|채우지는 않고 외곽선만 그린다.|
+
+# Toast
+
+## Toast 객체
+
+- 시스템 차원에서 제공되는 작은 팝업 대화상자
+- 사용자에게 임시적인 알림 사항을 전달할 때 유용함
+- 볼륨 조절이나 문자 메시지가 전달되었다는 것을 알릴 때 주로 사용되며 디버깅용으로도 쓰임
+- 플로팅 형태로 화면 하단에 잠시 나타나며 일정 시간이 지나면 자동으로 사라짐
+- 알림 사항을 전달하기만 할 뿐 포커스를 받을 수 없기 때문에 사용자의 작업을 방해하지 않는 것이 특징임
+- 메시지를 출력하는 Context, 표시할 문장, 메시지 표시 시간(LENGTH_SHORT, LENGTH_LONG) 등의 속성을 가짐
+
+## makeText 메소드
+
+- Toast 객체에 들어갈 메시지를 생성함
+- ex) `makeText(MainActivity.this, "Short Time Message.", Toast.LENGTH_SHORT)`
+- makeText(컨텍스트, 리소스 ID, 출력시간)
+- makeText(컨텍스트, 텍스트, 출력시간)
+
+# 소리 츨력
+
+- 일반적으로 wav, mp3, ogg 등의 포맷을 비프음으로 사용함
+- 재생하고자 하는 소리 파일은 프로젝트의 res/raw 폴더에 복사함
+- raw 폴더를 기본적으로 만들어 놓지 않으므로 raw 폴더를 먼저 만든 후 소리 파일을 복사해 놓아야 함
+- 소리 파일을 열 때 아래의 정적 메소드를 호출함
+  - `static MediaPlayer create(Context context, int resid)`
+- 소리 파일이 raw 폴더에 저장되므로 ID는 R.raw.id의 형식으로 정의되고, R.java 파일에 자동으로 등록됨
+
 # 용어 정리
 
 - **XML**
@@ -638,3 +750,9 @@
   - View의 gravity 속성값을 반환하는 메소드
 - **getOrientation**
   - View의 orientation 속성값을 반환하는 메소드
+- **Canvas**
+  - 뷰의 그리기 표면이며 이위에 그림을 그림
+- **antialiasing**
+  - 이미지의 외곽선이 곡선으로 된 경우, 계단식 모서리가 나타나는데, 이것을 부드럽게 만들어 곡선으로 보이게 하는 렌더링 기술
+- **API**
+  - application programming interface, 함수의 호출에 의해 요청되는 작업을 수행하기 위해 이미 존재하는 몇 개의 프로그램 모듈이나 루틴을 가지고 있음
