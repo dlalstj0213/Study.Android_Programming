@@ -20,6 +20,7 @@
             android:text="padding1"
             android:padding="15px"
             android:textSize="30px"
+            android:textStyle="bold"
             android:textColor="@color/white"
             android:background="#7c7d7c"/>
         
@@ -28,28 +29,40 @@
             android:layout_height="wrap_content"
             android:id="@+id/editUpperText"
             android:layout_below="@id/textViewTop"
-            android:hint="Upper Text"
+            android:hint="@string/firstHintText"
             android:padding="15px"
             android:textSize="50px"
             android:inputType="textCapCharacters"
             android:background="@color/white"/>
 
-        <Button
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btn"
+            android:id="@+id/secondLayout"
             android:layout_margin="30px"
-            android:layout_below="@id/editUpperText"
-            android:inputType="text"
-            android:clickable="true"
-            android:text="Button"/>
+            android:minHeight="30px"
+            android:background="#FF1100"
+            android:layout_below="@id/editUpperText">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10px"
+                android:id="@+id/btn"
+                android:inputType="text"
+                android:clickable="true"
+                android:background="@color/white"
+                android:textColor="@color/black"
+                android:text="Button"/>
+        </RelativeLayout>
+
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btn"
+            android:layout_below="@id/secondLayout"
             android:id="@+id/editLowerText"
-            android:hint="Lower Text"
+            android:hint="@string/secondHindText"
             android:padding="15px"
             android:textSize="50px"
             android:inputType="text"

@@ -109,6 +109,17 @@
   - [라이브러리](#라이브러리)
   - [안드로이드 런타임](#안드로이드-런타임)
   - [안드로이드 커널](#안드로이드-커널)
+- [입력 이벤트 처리](#입력-이벤트-처리)
+  - [1. 핸들러의 우선순위](#1-핸들러의-우선순위)
+    - [onTouch 핸들러 비교](#ontouch-핸들러-비교)
+  - [2. 화면 터치 입력 처리](#2-화면-터치-입력-처리)
+    - [화면 터치 이벤트](#화면-터치-이벤트)
+    - [MotionEvent 객체](#motionevent-객체)
+  - [3. 키보드 입력 처리](#3-키보드-입력-처리)
+    - [키보드 이벤트](#키보드-이벤트)
+    - [KeyEvent 객체](#keyevent-객체)
+    - [keyCode](#keycode)
+    - [getAction 메소드](#getaction-메소드)
 - [용어 정리](#용어-정리)
 
 # 안드로이드 프로젝트 구성 (1)
@@ -872,6 +883,92 @@ void setOnFocusChangeListener(View.OnFocusChangeListener l)
 - 하드웨어와 안드로이드 플랫폼 스택 사이의 추상화 계층 역할을 수행함
 - 메모리 관리, 프로세스 관리, 네트워크 관리, 드리이버 관리를 수행함
 
+# 입력 이벤트 처리
+
+## 1. 핸들러의 우선순위
+
+- 이벤트 핸들러가 중복 정의되어 있을 경우 미리 정한 우선순위에 따라 핸들러를 선택하여 호출함
+
+### onTouch 핸들러 비교
+
+- View와 액티비티의 onTouchEvent 콜백 메소드는 동일한 이벤트에 대해 호출되지만 다른 의미의 인수임
+- View의 onTouchEvent 콜백 메소드는 View의 터치를 처리하므로 event 인수는 View의 좌상단을 기준으로 한 좌표임
+- 액티비티의 onTouchEvent 콜백 메소드는 액티비티에 속한 모든 View에 대한 터치 이벤트를 최종적으로 처리하므로 액티비티의 좌상단을 기준으로 한 좌표가 전달됨
+
+## 2. 화면 터치 입력 처리
+
+### 화면 터치 이벤트
+
+- 화면 터치 이벤트 : 손가락이나 스타일러스로 스마트폰의 스크린을 터치 동작
+- 화면 터치 이벤트는 콜백 메소드나 리스너의 핸들러로 처리됨
+  
+Boolean onTouchEvent(MotionEvent event)  
+Boolean onTouch(View v, MotionEvent event)
+
+### MotionEvent 객체
+
+- 콜백 메소드는 하나의 이벤트에 대한 정보만을 가지는데 비해 리스너는 여러 대상에 대해 등록이 가능하므로 이벤트 대상인 View의 아이디를 전달받음
+- MotionEvent객체의 getAction 메소드는 사용자의 행동(화면 터치 등)에 대한 정보를 전달함
+- 화면 터치, 화면 터치 상태에서의 이동, 화면 터치 해제 등의 각각 다른 이벤트가 발생함
+
+|동작|설명|
+|---|---|
+|ACTION_DOWN|화면 터치|
+|ACTION_MOVE|화면 터치 상태에서의 이동|
+|ACTION_UP|화면 터치 해제|
+
+- 터치한 화면의 좌표는 MotionEvent의 getX, getY 메소드로 조사할 수 있음
+
+## 3. 키보드 입력 처리
+
+### 키보드 이벤트
+
+- 키보드 이벤트는 아래의 콜백 메소드가 처리함
+
+boolean onKeyDown(int keyCode, KeyEvent event)
+
+- 사용자가 키보드를 누르면 포커스를 가진 View의 onKeyDown 메소드가 호출됨
+- View를 상속받았다면 onKeyDown 메소드를 재정의하여 키입력을 처리함
+- 혹은 View.OnKeyListener 인터페이스 onKey 메소드를 구현한 후, onKey 메소드를 리스너로 등록함
+
+boolean onKey(View v, int keyCode, KeyEvent event)
+
+### KeyEvent 객체
+
+- 키보드 이벤트에 대한 여러 가지 정보를 구하는 메소드를 제공함
+- getKeyCode 메소드는 눌러진 키의 코드(keyCode 인수)를 전달해줌
+- 조합기의 상태나 이벤트 발생 시간을 조사하는 메소드도 제공됨
+
+### keyCode
+
+- keyCode는 사용자가 누른 키의 식별자이며 다음과 같은 상수가 정의되어 있음
+
+|동작|설명|
+|---|---|
+|KEYCODE_DPAD_LEFT|왼쪽 이동키|
+|KEYCODE_DPAD_RIGHT|오른쪽 이동키|
+|KEYCODE_DPAD_UP|위쪽 이동키|
+|KEYCODE_DPAD_DOWN|아래쪽 이동키|
+|KEYCODE_DPAD_CENTER|이동키 중앙의 Button|
+|KEYCODE_A ~ Z|알파벳 A ~ Z|
+|KEYCODE_0 ~ 9|숫자 0 ~ 9|
+|KEYCODE_CALL|통화|
+|KEYCODE_ENDCALL|통화 종료|
+|KEYCODE_HOME|홈|
+|KEYCODE_BACK|뒤로|
+|KEYCODE_VOLUME_UP|볼륨 증가 Button|
+|KEYCODE_VOLUME_DOWN|볼륨 감소 Button|
+
+### getAction 메소드
+
+- getAction 메소드는 키보드에 어떤 동작을 했는지를 나타내는 다음 세 가지 값 중 하나를 되돌려줌
+
+|동작|설명|
+|---|---|
+|ACTION_DOWN|키를 눌렀다.|
+|ACTION_UP|키를 뗐다.|
+|ACTION_MULTIPLE|같은 키를 여러 번 눌렀다.|
+
 # 용어 정리
 
 - **XML**
@@ -902,8 +999,10 @@ void setOnFocusChangeListener(View.OnFocusChangeListener l)
   - 컴퓨터에서 운영 체계 위의 응용 프로그램을 동작시키고 결과를 화면에 표시하는 작은 그래픽 사용자 인터페이스(GUI)도구
 - **이벤트**
   - 프로그램이 반응하도록 사용자가 생성시키는 동작 또는 사건의 발생
+  - 웹 페이지에서 일어나는 하나의 행위를 다루는 것으로서, 링크를 클릭하거나 텍스트 영역의 값을 바꾼다든가 하는 것들을 말함
 - **리스너**
   - 데이터를 받는 쪽을 말함
+  - 특정 이벤트를 처리하는 인터페이스이며, 이벤트 발생 여부를 기다리고 있는 객체
 - **gravity**
   - 수평, 수직 방햐에 대해 정렬 방식을 각각 지정할 수 있는 속성
 - **툴바**
@@ -938,9 +1037,9 @@ void setOnFocusChangeListener(View.OnFocusChangeListener l)
   - application programming interface, 함수의 호출에 의해 요청되는 작업을 수행하기 위해 이미 존재하는 몇 개의 프로그램 모듈이나 루틴을 가지고 있음
 - **callback**
   - 특정 이벤트가 발생했을 때 시스템에 의해 자동으로 호출되는 메소드
-- **Listener**
-  - 특정 이벤트를 처리하는 인터페이스이며, 이벤트 발생 여부를 기다리고 있는 객체
-- **Event**
-  - 웹 페이지에서 일어나는 하나의 행위를 다루는 것으로서, 링크를 클릭하거나 텍스트 영역의 값을 바꾼다든가 하는 것들을 말함
 - **Handler**
   - 다른 객체들이 보낸 메시지를 받고 이를 처리하는 객체임
+- **식별자**
+  - 데이터 항목을 식별 또는 이름 붙이고, 때로는 그 데이터의 성질을 표시하기 위하여 사용되는 문자 또는 문자의 집합
+- **익명 클래스**
+  - 일회용 객체를 한번만 만들고 끝낼 때 사용함. 이벤트 처리할 때 사용함

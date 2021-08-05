@@ -4,4 +4,6 @@
     <string name="hello_world">Hello World!</string>
     <string name="welcome">Welcome to KOREA!</string>
     <string name="android">Start! Android Programming!</string>
+    <string name="firstHintText">Upper Text</string>
+    <string name="secondHindText">Lower Text</string>
 </resources>
