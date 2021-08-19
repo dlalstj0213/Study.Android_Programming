@@ -166,6 +166,13 @@
   - [5. simple spinner item 과 simple spinner dropdown item](#5-simple-spinner-item-과-simple-spinner-dropdown-item)
   - [6. Prompt 메시지](#6-prompt-메시지)
   - [7. 항목의 선택 변경](#7-항목의-선택-변경)
+- [AlertDialog](#alertdialog)
+  - [1. AlertDialog 생성](#1-alertdialog-생성)
+  - [2. Builder 생성자](#2-builder-생성자)
+  - [3. Builder 호출 및 반환](#3-builder-호출-및-반환)
+  - [4. AlertDialog의 버튼](#4-alertdialog의-버튼)
+  - [5. AlertDialog 버튼 배치](#5-alertdialog-버튼-배치)
+  - [6. 클릭리스너가 null인 경우](#6-클릭리스너가-null인-경우)
 - [용어 정리](#용어-정리)
 
 # 안드로이드 프로젝트 구성 (1)
@@ -1682,6 +1689,121 @@ boolean onKey(View v, int keyCode, KeyEvent event)
 - onItemSelected 메소드는 항목이 선택될 때, onNothingSelected 메소드는 모든 항목이 선택 해제될 때 각각 호출됨
 - 이 인터페이스를 구현하려면 두 메소드를 모두 구현해야 하지만, 선택 해제시에는 특별한 동작이 필요치 않으므로 그냥 비워두면 됨
 
+# AlertDialog
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- 사용자에게 전달 사항을 알리고, 질문을 통해 사용자의 선택을 받아들이는 기본적인 통신 수단
+- **Toast**도 사용자에게 내용을 알리는 방법 중 하나이지만, 사용자와 상호작용을 할 수 없기 때문에 **AlertDialog보다 활용성이 떨어짐**
+- Toast 보다 좀 더 복잡한 메시지를 전달할 때 이용되며, Dialog 클래스는 사용 방법이 복잡하기 때문에 간단한 AlertDialog를 주로 사용함
+- **문자열 메시지**뿐만 아니라 **타이틀바**나 **아이콘**도 출력할 수 있으며 버튼을 통해 사용자의 입력을 받아들일 수도 있음
+
+## 1. AlertDialog 생성
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- AlertDialog는 생성자가 protected로 숨겨져 있으므로 직접적으로 생성할 수 없으며 내부 클래스인 Builder를 통해 생성해야 함
+- AlertDialog.Builder 객체를 먼저 생성하고, 이 객체의 메소드들을 호출해서 객체 생성 전에 필요한 속성을 지정한 후, AlertDialog 객체를 생성함
+
+## 2. Builder 생성자
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- 메시지, 아이콘 및 각종 버튼 등의 적용 옵션들이 많아서 생성자를 통해서 하나씩 모두 지정하기 번거로우므로 별도의 Builder 클래스가 제공됨
+- Builder는 일단 생성해 놓고 필요한 메소드를 호출할 수 있어 생성자보다 편리함
+- AlertDialog.Builder() 함수를 통해 Builder 객체를 만든다.
+
+    AlertDialog.Builder(Context context)
+
+- 인수로 콘텍스트를 전달하는데 AlertDialog를 생성하는 부모 액티비티를 전달함
+- Builder 객체를 생성한 후에 Builder 객체의 메소드(setMessage, setTile, setIcon)를 통해 AlertDialog의 여러 가지 설정을 초기화함
+- 아래의 메소드는 AlertDialog의 메시지, 타이틀바의 문자열, 아이콘 등을 지정함
+
+    AlertDialog.Builder setMessage(CharSequence message)
+    AlertDialog.Builder setTitle(CharSequence title)
+    AlertDialog.Builder setIcon(int iconId)
+
+    AlertDialog show()
+    AlertDialog create()
+
+- 위의 두 메소드는 AlertDialog를 보이게 하거나 AlertDialog를 생성함
+- Builder 객체의 create 메소드는 AlertDialog를 생성만하고 화면으로 출력하지 않음
+- 생성된 AlertDialog는 메모리에만 존재하고 화면에 나타나지는 않으며, show 메소드를 통해 화면에 나타남
+
+## 3. Builder 호출 및 반환
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+```java
+new AlertDialog.Builder(this)
+                .setTitle("알립니다.")
+                .setMessage("AlertDialog를 열었습니다.")
+                .setIcon(R.drawable.icon)
+                .show()
+```
+
+- new AlertDialog.Builder는 Context 객체를 생성자 매개변수로 받음
+- Activity는 Context를 상속하고 있으므로 자기 자신이 객체를 넣음
+  - new AlertDialog.Builder(해당클래스이름.this)
+- Builder의 생성자와 속성에 관한 설정 메소드들은 모두 Builder 자체를 반환하며, Builder 객체 생성 후, 별도의 메소드 호출문을 따로 작성할 필요없이 반환되는 Builder 객체에 대해 메소드들을 연쇄적으로 호출해도 상관없음
+- Builder 객체에 별도의 이름을 줄 필요도 없고 순서대로 메소드를 호출함
+- new  연산자는 Builder를 생성하며, AlertDialog는 최종적으로 호출되는 show 메소드에 의해 화면에 보임
+
+## 4. AlertDialog의 버튼
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- AlertDialog가 열리면, AlertDialog가 닫힐 때까지 뒤쪽의 액티비티는 실행 금지 상태가 됨
+- 사용자가 메시지를 읽고 AlertDialog를 닫은 후에, 뒤의 액티비티는 동작을 계속할 수 있음
+- AlertDialog에 Button을 배치할 때는 3개까지의 버튼을 표시할 수 있음
+- 긍정(Positive), 부정(Negative), 중립(Neutral)으로 각각 이름이 붙어있으며 모두 배치할 경우 왼쪽에서 순서대로 배치됨
+
+    setPositiveButton(CharSequence text, DialogInterface.onClickListener listener)
+    setNeutralButton(CharSequence text, DialogInterface.onClickListener listener)
+    setNegativeButton(CharSequence text, DialogInterface.onClickListener listener)
+
+- 인수로는 버튼에 표시할 텍스트와 클릭리스너를 전달함
+
+## 5. AlertDialog 버튼 배치
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- Button의 텍스트는 문자열 상수를 바로 지정할 수도 있고 리소스의 문자열 ID를 지정할 수도 있음
+- Button의 이름은 구분을 위한 것이고, 실제 의미는 구현된 코드로 결정됨
+
+## 6. 클릭리스너가 null인 경우
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- 버튼의 클릭리스너가 아무런 동작도 하지 않는다면, 클릭리스너 자체를 null로 지정해도 상관없음
+
+```java
+new AlertDialog.Builder(this)
+                .setTitle("MESSAGE")
+                .setMessage("AlertDialog Test is success!!")
+                .setIcon(R.drawable.ic_launcher)
+                .setPositiveButton("CLOSE", null)
+                .show()
+```
+
+- 클릭리스너가 null이라도 버튼은 일단 화면에 배치됨
+- 클릭리스너가 지정되어 있지 않다는 것은 버튼을 클릭했을 때 특별한 동작을 하지 않는다는 뜻이며, 따라서 기본 동작인 닫기가 수행됨
+
+```java
+new AlertDialog.Builder(this)
+                .setTitle("NOTICE")
+                .setMessage("You should read the message.")
+                .setIcon(R.drawable.ic_launcher)
+                .setCancelable(false)
+                .setPositiveButton("CLOSE", null)
+                .show()
+```
+
+- setCancelable(false) 메소드는 스마트폰의 Back 버튼의 사용을 불가능하게 만드는 메소드이다.
+- 즉, 위의 코드는 스마트폰의 BACK 버튼에 반응하지 않으며 닫기 버튼을 눌러야면 닫힌다.
+- Back 버튼을 금지시켜 놓고 닫기 버튼도 제공하지 않는다면 위의 AlertDialog는 닫을 방법이 없을 것이다.
+
+
 # 용어 정리
 
 [⬆](#목차)<!-- Link generated with jump2header -->
@@ -1768,3 +1890,9 @@ boolean onKey(View v, int keyCode, KeyEvent event)
   - 항목들을 수직으로 펼쳐서 보여줌
 - **Spinner**
   - 클릭할 때만 팝업으로 펼쳐지고, 여러 개의 항목 중에서 하나를 선택할 때 사용됨
+- **Builder 생성자**
+  - GUI 설계를 지원하는 응용으로 Next Step 상에서 동작하는 응용 개발을 보조함
+- **가비지 콜렉션**
+  - 자기디스크, 자기드럼 등, 시스템 공동의 직접 액세스 장치상의 파일 영역에 있어서의 상기 문제를 해결하기 위한 가비지 해방이나 파일 재배치를 하기 위한 처리기능
+- **가비지 콜렉터**
+  - 가비지 콜렉션의 기능을 가지는 프로그램을 말함
