@@ -173,6 +173,16 @@
   - [4. AlertDialog의 버튼](#4-alertdialog의-버튼)
   - [5. AlertDialog 버튼 배치](#5-alertdialog-버튼-배치)
   - [6. 클릭리스너가 null인 경우](#6-클릭리스너가-null인-경우)
+- [AlertDialog 사전 생성](#alertdialog-사전-생성)
+  - [1. AlertDialog의 효율성](#1-alertdialog의-효율성)
+  - [2. AlertDialog의 사전 생성 메소드](#2-alertdialog의-사전-생성-메소드)
+  - [3. showDialog 메소드](#3-showdialog-메소드)
+  - [4. AlertDialog 관리 메소드](#4-alertdialog-관리-메소드)
+  - [5. onCreateDialog 메소드](#5-oncreatedialog-메소드)
+  - [6. onPrepareDialog 메소드](#6-onpreparedialog-메소드)
+  - [7. @SuppressWarnings("deprecation")](#7-suppresswarningsdeprecation)
+- [알림 메시지 전달](#알림-메시지-전달)
+  - [AlertDialog 용도](#alertdialog-용도)
 - [용어 정리](#용어-정리)
 
 # 안드로이드 프로젝트 구성 (1)
@@ -1803,6 +1813,93 @@ new AlertDialog.Builder(this)
 - 즉, 위의 코드는 스마트폰의 BACK 버튼에 반응하지 않으며 닫기 버튼을 눌러야면 닫힌다.
 - Back 버튼을 금지시켜 놓고 닫기 버튼도 제공하지 않는다면 위의 AlertDialog는 닫을 방법이 없을 것이다.
 
+# AlertDialog 사전 생성
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+## 1. AlertDialog의 효율성
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- AlertDialog는 필요할 때 언제든지 Builder로부터 생성할 수 있음
+- 복잡한 모양의 AlertDialog의 생성과 회수를 반복하면 프로그램 효율이 떨어질 것임
+- AlertDialog에는 많은 속성들이 지정되며, Button의 클릭리스너까지 포함되므로 생성될 때마다 많은 메모리를 사용함
+- CustomView로 구성된 복잡한 모양의 View를 매번 생성하면 수행 속도가 느려지며 반응성도 나빠짐
+- 매번 생성하지 않고 미리 AlertDialog를 만들어 놓고 필요할 때 보이도록 할 수 있음
+
+## 2. AlertDialog의 사전 생성 메소드
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- 액티비티의 다음 세 메소드를 사용하여 AlertDialog를 관리함
+
+```java
+void showDialog(int id)
+void dismissDialog(int id)
+void removeDialog(int id)
+```
+
+- 인수로는 AlertDialog의 고유한 ID를 전달하는데 AlertDialog를 관리하는 주체인 액티비티가 AlertDialog 별로 고유한 ID를 관리해야 함
+- 중복되면 안되므로 0부터 시작하는 일련번호를 부여하는 방법이 가장 간편하며, 형식성을 갖추려면 상수로 정의해 두는 것이 좋음
+
+## 3. showDialog 메소드
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- showDialog 메소드는 인수로 전달된 ID의 AlertDialog를 화면에 출력함
+- 최초 호출시 AlertDialog를 생성하여 화면에 출력하며, 두 번째 이후부터는 미리 생성해 놓은 AlertDialog를 사용하여 반응 속도를 높임
+
+## 4. AlertDialog 관리 메소드
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- showDialog 메소드를 사용하려는 액티비티는 AlertDialog를 관리하는 다음 메소드를 반드시 재정의해야 함
+
+```java
+Dialog onCreateDialog(int id)
+void onPrepareDialog(int id, Dialog dialog)
+```
+
+## 5. onCreateDialog 메소드
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- 전달된 AlertDialog의 ID에 대응하는 AlertDialog를 생성하여 반환함
+- 한번 생성된 AlertDialog는 시스템에 의해 관리됨
+- 하나의 AlertDialog에 대해서 한번만 호출되며, 두 번째 호출부터 다시 생성할 필요없이 화면에 보이기만 하면 되므로 반응 속도가 훨씬 빨라짐
+
+## 6. onPrepareDialog 메소드
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- AlertDialog가 화면에 나타나기 전에 호출되며, 응용 프로그램에 따라 AlertDialog를 갱신함
+- onCreateDialog 메소드와는 달리 이미 생성된 AlertDialog에 대해서도 호출되므로 상황에 따라 AlertDialog의 속성이나 위젯 속성을 변경하기에 적합함
+- AlertDialog의 모양이 항상 일정하다면 onPreparedDialog 메소드는 재정의하지 않아도 상관없음
+
+## 7. @SuppressWarnings("deprecation")
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- 컴파일러의 경고와 관련된 표시
+- deprecation warning을 무시하라는 선언
+- 이 말은 SDK가 해당 warning이 뜨는 함수를 가급적 사용하지 말아달라 당부하는 것을 의미함
+- Deprecated된 메소드를 오버라이드하거나 이용했을 때 발생하는 deprecation 경고문을 뜨지 않게 함
+- "deprecation"은 사전적 의미로 반대, 불찬성이란 뜻을 가짐
+- 따라서 클래스나 메소드 등에 문제점이 발견되어 그것을 개선하는 대체 방법을 마련하고 문제가 되는 클래스 혹은 메소드를 deprecated(반대) 선언을 함
+- deprecated된 메소드는 추후 사용이 불가할 수도 있음
+
+# 알림 메시지 전달
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+## AlertDialog 용도
+
+[⬆](#목차)<!-- Link generated with jump2header -->
+
+- AlertDialog의 주된 용도는 사용자에게 뭔가를 알리고 다음 작업에 대한 지시를 받는 것임
+- 어떤 동작을 하던 중에 치명적인 에러가 발생했으면, 작업을 계속할 수 없음을 알려야 하며 다음 동작을 어떻게 할 것인지도 물어보아야 함
+- AlertDialog는 부모 액티비티의 사용을 금지시켜 놓고 출력되므로 이런 용도에 적합함
+
 
 # 용어 정리
 
@@ -1896,3 +1993,7 @@ new AlertDialog.Builder(this)
   - 자기디스크, 자기드럼 등, 시스템 공동의 직접 액세스 장치상의 파일 영역에 있어서의 상기 문제를 해결하기 위한 가비지 해방이나 파일 재배치를 하기 위한 처리기능
 - **가비지 콜렉터**
   - 가비지 콜렉션의 기능을 가지는 프로그램을 말함
+- **AlertDialog**
+  - AlertDialog를 닫기 전에 다른 윈도우로 전환할 수 없음. 그러나 다른 프로그램으로는 전환할 수 있음
+- **@SuppressWarnings**
+  - deprecation warning을 무시하라는 선언하며, SDK가 해당 warning이 뜨는 함수를 가급적 사용하지 말라는 것을 의미함
